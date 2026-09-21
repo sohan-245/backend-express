@@ -1,15 +1,24 @@
 const express = require('express');
+const logger= require('./middleware/logger');
+const hellomiddleware = require('./middleware/hellomiddleware');
+const one = require('./middleware/one');
+const two = require('./middleware/two');
+const three = require('./middleware/three');
 const app = express()
 //specify the format will be json
 app.use(express.json())
+app.use(express.static('public'))
 const port = 3000
 
-app.get('/', (req, res) => {
+//for calling middleware we use app.use
+app.use(logger);
+
+app.get('/', one, two, three,(req, res) => {
   res.send('Hello World!')
 })
 
 //making our first request
-app.get("/name",(req,res)=>{
+app.get("/name",hellomiddleware,(req,res)=>{
   //header value
   console.log("header value:",req.headers.myheader)
   //getting params
