@@ -1,12 +1,18 @@
+//Gre7T1RSe1q8RGev
 const express = require('express');
-// 
+ 
 const app = express()
 //specify the format will be json
 app.use(express.json())
 app.use(express.static('public'))
 const port = 3000
-
 //connect the mongo db database
+// const dns = require('dns');
+// dns.setServers([
+//     '8.8.8.8',
+//     '1.1.1.1'
+// ]);
+
 const mongoose = require('mongoose')
 require('dotenv').config()
 
@@ -22,6 +28,6 @@ const connection = async()=>{
     }
 }
 connection();
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`)
-// })
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
