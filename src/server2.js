@@ -16,6 +16,64 @@ const port = 3000
 const mongoose = require('mongoose')
 require('dotenv').config()
 
+//importing user Schema
+const User = require('./models/User')
+
+//make a route
+app.post('/create/user',async(req,res,next)=>{
+try{
+    //Create a user
+    const user = await User.create(req.body);//Save user in database
+    //create promise with success and failure
+    res.status(201).json({
+        "success":true,
+        data:user
+    })
+}
+catch(error){
+res.status(400).json({
+    "success":false,
+    error:error.message
+})
+}
+})
+
+//read
+app.get('/read/user',async(req,res,next)=>{
+try{
+    const user = await User.find();
+    //create promise with success and failure
+    res.status(201).json({
+        "success":true,
+        data:user
+    })
+}
+catch(error){
+res.status(400).json({
+    "success":false,
+    error:error.message
+})
+}
+})
+
+//delete
+app.delete('/delete/user',async(req,res,next)=>{
+try{
+    const user = await User.findByIdAndDelete(req.params.id);
+    //create promise with success and failure
+    res.status(201).json({
+        "success":true,
+        data:user
+    })
+}
+catch(error){
+res.status(400).json({
+    "success":false,
+    error:error.message
+})
+}
+})
+
 //connection
 const connection = async()=>{
     try{
