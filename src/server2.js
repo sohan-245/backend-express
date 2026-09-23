@@ -57,9 +57,27 @@ res.status(400).json({
 })
 
 //delete
-app.delete('/delete/user',async(req,res,next)=>{
+app.delete('/delete/user/:id',async(req,res,next)=>{
 try{
     const user = await User.findByIdAndDelete(req.params.id);
+    //create promise with success and failure
+    res.status(201).json({
+        "success":true,
+        data:user
+    })
+}
+catch(error){
+res.status(400).json({
+    "success":false,
+    error:error.message
+})
+}
+})
+
+//update
+app.put('/update/user/:id',async(req,res,next)=>{
+try{
+    const user = await User.findByIdAndUpdate(req.params.id,req.body);
     //create promise with success and failure
     res.status(201).json({
         "success":true,
