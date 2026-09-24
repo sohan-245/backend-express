@@ -1,9 +1,10 @@
 //Gre7T1RSe1q8RGev
 const express = require('express');
- 
+const cookieparser=require('cookie-parser');
 const app = express()
 //specify the format will be json
-app.use(express.json())
+app.use(cookieparser());
+app.use(express.json());
 app.use(express.static('public'))
 const port = 3000
 //connect the mongo db database
@@ -37,6 +38,29 @@ res.status(400).json({
 })
 }
 })
+//login 
+app.post('/login',async(req,res,next)=>{
+try{
+    const token="randomgeneratedtoken";
+    const user = await User.findOne({email:req.body.email})
+    if(user.password==req.body.password){
+        res.cookie("token",token);
+        return res.status(200).json({
+            "message":"Login sucessful"
+        })
+    }
+    else{
+        return res.status(403).json({
+            "message":"password not matched"
+        })
+    }
+}
+catch(error){
+    res.status(500).json({
+        "message":error.message
+    })
+}}
+)
 
 //read
 app.get('/read/user',async(req,res,next)=>{
@@ -57,14 +81,28 @@ res.status(400).json({
 })
 
 //delete
-app.delete('/delete/user/:id',async(req,res,next)=>{
+app.delete('/delete/user',async(req,res,next)=>{
 try{
-    const user = await User.findByIdAndDelete(req.params.id);
-    //create promise with success and failure
-    res.status(201).json({
+    const password = req.query.password;
+    const user = await User.findById(req.query.id);
+    
+    if(user.password==password){
+        console.log("password matched")
+        const user = await User.findByIdAndDelete(req.query.id);
+        return res.status(200).json({
         "success":true,
         data:user
     })
+    
+}
+    else{
+        console.log("Password not matched")
+        return res.status(403).json({
+            "message":"password not matched"
+        })
+        
+        
+    }
 }
 catch(error){
 res.status(400).json({
@@ -75,6 +113,7 @@ res.status(400).json({
 })
 
 //update
+//put
 app.put('/update/user/:id',async(req,res,next)=>{
 try{
     const user = await User.findByIdAndUpdate(req.params.id,req.body);
@@ -91,6 +130,7 @@ res.status(400).json({
 })
 }
 })
+//patch
 
 //connection
 const connection = async()=>{
